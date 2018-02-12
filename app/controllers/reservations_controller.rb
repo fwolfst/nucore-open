@@ -249,12 +249,12 @@ class ReservationsController < ApplicationController
   private
 
   def reservation_params
-    reservation_params = params[:reservation].except(
-      :actual_start_date,
-      :actual_start_hour,
-      :actual_start_min,
-      :actual_start_meridian,
-    )
+    reservation_params = params.require(:reservation).permit(:reserve_start_date,
+                                                             :reserve_start_hour,
+                                                             :reserve_start_min,
+                                                             :reserve_start_meridian,
+                                                             :duration_mins,
+                                                             :note)
 
     reservation_params.merge!(reservation_start_as_params) if fixed_start_time?
 
