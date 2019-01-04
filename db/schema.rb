@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181119211456) do
+ActiveRecord::Schema.define(version: 20190104011154) do
+
+  create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "facility_id",   null: false
+    t.integer  "account_id",    null: false
+    t.integer  "created_by_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["account_id"], name: "index_account_facility_joins_on_account_id", using: :btree
+    t.index ["created_by_id"], name: "index_account_facility_joins_on_created_by_id", using: :btree
+    t.index ["facility_id"], name: "index_account_facility_joins_on_facility_id", using: :btree
+  end
 
   create_table "account_users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "account_id",            null: false
@@ -161,6 +173,10 @@ ActiveRecord::Schema.define(version: 20181119211456) do
     t.string   "order_notification_recipient"
     t.boolean  "sanger_sequencing_enabled",                  default: false, null: false
     t.text     "banner_notice",                limit: 65535
+    t.string   "thumbnail_file_name"
+    t.string   "thumbnail_content_type"
+    t.bigint   "thumbnail_file_size"
+    t.datetime "thumbnail_updated_at"
     t.index ["abbreviation"], name: "index_facilities_on_abbreviation", unique: true, using: :btree
     t.index ["is_active", "name"], name: "index_facilities_on_is_active_and_name", using: :btree
     t.index ["name"], name: "index_facilities_on_name", unique: true, using: :btree
@@ -228,8 +244,8 @@ ActiveRecord::Schema.define(version: 20181119211456) do
   end
 
   create_table "log_events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "loggable_type"
     t.integer  "loggable_id"
+    t.string   "loggable_type"
     t.string   "event_type"
     t.integer  "user_id"
     t.datetime "created_at",    null: false
@@ -780,10 +796,10 @@ ActiveRecord::Schema.define(version: 20181119211456) do
   end
 
   create_table "vestal_versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "versioned_type"
     t.integer  "versioned_id"
-    t.string   "user_type"
+    t.string   "versioned_type"
     t.integer  "user_id"
+    t.string   "user_type"
     t.string   "user_name"
     t.text     "modifications",     limit: 65535
     t.integer  "version_number"
@@ -802,6 +818,11 @@ ActiveRecord::Schema.define(version: 20181119211456) do
     t.index ["versioned_id", "versioned_type"], name: "index_vestal_versions_on_versioned_id_and_versioned_type", using: :btree
   end
 
+  add_foreign_key "account_facility_joins", "accounts"
+  add_foreign_key "account_facility_joins", "facilities"
+  add_foreign_key "account_facility_joins", "users", column: "created_by_id"
+  add_foreign_key "account_users", "accounts", name: "fk_accounts"
+  add_foreign_key "account_users", "users"
   add_foreign_key "accounts", "facilities", name: "fk_account_facility_id"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
