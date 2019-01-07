@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190104011154) do
+ActiveRecord::Schema.define(version: 20190107180125) do
 
   create_table "account_facility_joins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "facility_id",   null: false
@@ -50,13 +50,11 @@ ActiveRecord::Schema.define(version: 20190104011154) do
     t.integer  "updated_by"
     t.datetime "suspended_at"
     t.text     "remittance_information", limit: 65535
-    t.integer  "facility_id"
     t.integer  "affiliate_id"
     t.string   "affiliate_other"
     t.string   "outside_contact_info"
     t.string   "ar_number"
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id", using: :btree
-    t.index ["facility_id"], name: "fk_account_facility_id", using: :btree
   end
 
   create_table "affiliates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -823,7 +821,6 @@ ActiveRecord::Schema.define(version: 20190104011154) do
   add_foreign_key "account_facility_joins", "users", column: "created_by_id"
   add_foreign_key "account_users", "accounts", name: "fk_accounts"
   add_foreign_key "account_users", "users"
-  add_foreign_key "accounts", "facilities", name: "fk_account_facility_id"
   add_foreign_key "bulk_email_jobs", "facilities"
   add_foreign_key "bulk_email_jobs", "users"
   add_foreign_key "bundle_products", "products", column: "bundle_product_id", name: "fk_bundle_prod_prod"
