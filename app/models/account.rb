@@ -19,21 +19,6 @@ class Account < ApplicationRecord
   has_many :account_facility_joins
   has_many :facilities, -> { merge(Facility.active) }, through: :account_facility_joins
 
-  # Temporary methods
-  def facility
-    facilities.first
-  end
-
-  def facility_id=(facility_id)
-    self[:facility_id] = facility_id
-    self.account_facility_joins = [AccountFacilityJoin.new(facility_id: facility_id, account: self)] if facility_id
-  end
-
-  def facility=(facility)
-    self.facility_id = facility&.id
-  end
-  # Temporary methods
-
   has_many :account_users, -> { where(deleted_at: nil) }, inverse_of: :account
   has_many :deleted_account_users, -> { where.not("account_users.deleted_at" => nil) }, class_name: "AccountUser"
   # Using a basic hash doesn't work with the `owner_user` :through association. It would
@@ -64,6 +49,7 @@ class Account < ApplicationRecord
   validate { errors.add(:base, :missing_owner) if missing_owner? }
 
   delegate :administrators, to: :account_users
+  delegate :per_facility?, :global?, to: :class
 
   # The @@config class variable stores account configuration details via a
   # seperate `AccountConfig` class. This way downstream repositories can use

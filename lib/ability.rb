@@ -188,7 +188,7 @@ class Ability
         # A facility admin can manage an account if it has no facility (i.e. it's a chart string) or the account
         # is attached to the current facility.
         can :manage, Account do |account|
-          account.facility.nil? || account.facility == resource
+          account.global? || account.facilities.include?(resource)
         end
 
         can [:show_problems], [Order, Reservation]
