@@ -126,7 +126,7 @@ group :test do
   gem "poltergeist"
   gem "rails-controller-testing"
   gem "rspec-collection_matchers"
-  gem "shoulda-matchers", github: "thoughtbot/shoulda-matchers" # https://github.com/thoughtbot/shoulda-matchers/issues/913
+  gem "shoulda-matchers", "~> 4.0.0.rc1"
   gem "single_test"
 end
 
